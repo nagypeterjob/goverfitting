@@ -68,3 +68,72 @@ func TestSize(t *testing.T) {
 		t.Errorf("Size is %+v, want %+v\n", size, expected)
 	}
 }
+
+func TestAddScalar(t *testing.T) {
+	tcs := []struct {
+		n        *Vector
+		scalar   float64
+		expected *Vector
+	}{
+		{
+			NewVector([]float64{1, 3, 5}),
+			3,
+			NewVector([]float64{4, 6, 8}),
+		},
+		{
+			NewVector(nil),
+			3,
+			NewVector(nil),
+		},
+		{
+			NewVector([]float64{3, 3, 3}),
+			1,
+			NewVector([]float64{3, 3, 3}),
+		},
+	}
+
+	for i, tc := range tcs {
+		m := tc.n.AddScalar(tc.scalar)
+		success := reflect.DeepEqual(m, tc.expected)
+		if !success {
+			t.Errorf("[%d] AddScalar is %+v, want %+v\n", i, m, tc.expected)
+		}
+	}
+}
+
+func TestMulScalar(t *testing.T) {
+	tcs := []struct {
+		n        *Vector
+		scalar   float64
+		expected *Vector
+	}{
+		{
+			NewVector([]float64{1, 3, 5}),
+			3,
+			NewVector([]float64{3, 9, 15}),
+		},
+		{
+			NewVector(nil),
+			3,
+			NewVector(nil),
+		},
+		{
+			NewVector([]float64{3, 3, 3}),
+			1,
+			NewVector([]float64{3, 3, 3}),
+		},
+		{
+			NewVector([]float64{1, 1, 1}),
+			0,
+			NewVector([]float64{0, 0, 0}),
+		},
+	}
+
+	for i, tc := range tcs {
+		m := tc.n.MulScalar(tc.scalar)
+		success := reflect.DeepEqual(m, tc.expected)
+		if !success {
+			t.Errorf("[%d] MulScalar is %+v, want %+v\n", i, m, tc.expected)
+		}
+	}
+}

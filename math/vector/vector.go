@@ -1,16 +1,18 @@
 package vector
 
+// Vector type
 type Vector struct {
 	N []float64
 }
 
+// NewVector creates new Vector
 func NewVector(n []float64) *Vector {
 	return &Vector{N: n}
 }
 
 // Add adds two vectors
 func (v *Vector) Add(vect *Vector) *Vector {
-	if len(v.N) != len(vect.N) {
+	if v.Size() != vect.Size() {
 		panic("failed vector addition - len mismatch")
 	}
 	n := make([]float64, len(v.N))
@@ -22,7 +24,7 @@ func (v *Vector) Add(vect *Vector) *Vector {
 
 // Mul multiplicates two vectors
 func (v *Vector) Mul(vect *Vector) *Vector {
-	if len(v.N) != len(vect.N) {
+	if v.Size() != vect.Size() {
 		panic("failed vector multiplication - len mismatch")
 	}
 	n := make([]float64, len(v.N))
@@ -45,7 +47,7 @@ func (v *Vector) Neg() *Vector {
 
 // Dot returns the dot product of two vectors
 func (v *Vector) Dot(vect *Vector) float64 {
-	if len(v.N) != len(vect.N) {
+	if v.Size() != vect.Size() {
 		panic("failed vector dot product - len mismatch")
 	}
 	var sum float64
@@ -58,4 +60,28 @@ func (v *Vector) Dot(vect *Vector) float64 {
 // Size returns vector size
 func (v *Vector) Size() int {
 	return len(v.N)
+}
+
+// AddScalar adds scalar value to each vector element
+func (v *Vector) AddScalar(scalar float64) *Vector {
+	if v.Size() == 0 || scalar == 1 {
+		return v
+	}
+	n := make([]float64, len(v.N))
+	for i := range v.N {
+		n[i] = v.N[i] + scalar
+	}
+	return NewVector(n)
+}
+
+// MulScalar multiplies scalar value to each vector element
+func (v *Vector) MulScalar(scalar float64) *Vector {
+	if v.Size() == 0 || scalar == 1 {
+		return v
+	}
+	n := make([]float64, len(v.N))
+	for i := range v.N {
+		n[i] = v.N[i] * scalar
+	}
+	return NewVector(n)
 }
