@@ -1,0 +1,6 @@
+FROM alpine:3.4
+LABEL Peter Nagy
+RUN apk add --update bash openssl ca-certificates && rm -rf /var/cache/apk/*
+ADD goverfitting /
+CMD ["/goverfitting"]
+TAG goverfitting:latest
