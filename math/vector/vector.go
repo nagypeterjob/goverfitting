@@ -1,5 +1,9 @@
 package vector
 
+import (
+	utils "github.ibm.com/Content-Delivery-Org/goverfitting/math"
+)
+
 // Vector type
 type Vector struct {
 	N []float64
@@ -15,11 +19,7 @@ func (v *Vector) Add(vect *Vector) *Vector {
 	if v.Size() != vect.Size() {
 		panic("failed vector addition - len mismatch")
 	}
-	n := make([]float64, len(v.N))
-	for i := range vect.N {
-		n[i] = v.N[i] + vect.N[i]
-	}
-	return NewVector(n)
+	return v.operation(vect, utils.Addition)
 }
 
 // Mul multiplicates two vectors
@@ -27,22 +27,30 @@ func (v *Vector) Mul(vect *Vector) *Vector {
 	if v.Size() != vect.Size() {
 		panic("failed vector multiplication - len mismatch")
 	}
-	n := make([]float64, len(v.N))
-	for i := range vect.N {
-		n[i] = v.N[i] * vect.N[i]
+	return v.operation(vect, utils.Multiplication)
+}
+
+// Sub subtracts two vectors
+func (v *Vector) Sub(vect *Vector) *Vector {
+	if v.Size() != vect.Size() {
+		panic("failed vector multiplication - len mismatch")
 	}
-	return NewVector(n)
+	return v.operation(vect, utils.Subtraction)
+}
+
+func (v *Vector) operation(vect *Vector, op utils.Operand) *Vector {
+	for i := range vect.N {
+		v.N[i] = op(v.N[i], vect.N[i])
+	}
+	return v
 }
 
 // Neg negates vector value signs
 func (v *Vector) Neg() *Vector {
-
-	n := make([]float64, len(v.N))
 	for i := range v.N {
-		n[i] = -v.N[i]
+		v.N[i] = -v.N[i]
 	}
-
-	return NewVector(n)
+	return v
 }
 
 // Dot returns the dot product of two vectors
@@ -64,24 +72,20 @@ func (v *Vector) Size() int {
 
 // AddScalar adds scalar value to each vector element
 func (v *Vector) AddScalar(scalar float64) *Vector {
-	if v.Size() == 0 || scalar == 1 {
-		return v
-	}
-	n := make([]float64, len(v.N))
-	for i := range v.N {
-		n[i] = v.N[i] + scalar
-	}
-	return NewVector(n)
+	return v.scalarOperation(scalar, utils.Addition)
 }
 
 // MulScalar multiplies scalar value to each vector element
 func (v *Vector) MulScalar(scalar float64) *Vector {
+	return v.scalarOperation(scalar, utils.Multiplication)
+}
+
+func (v *Vector) scalarOperation(scalar float64, op utils.Operand) *Vector {
 	if v.Size() == 0 || scalar == 1 {
 		return v
 	}
-	n := make([]float64, len(v.N))
 	for i := range v.N {
-		n[i] = v.N[i] * scalar
+		v.N[i] = op(v.N[i], scalar)
 	}
-	return NewVector(n)
+	return v
 }
