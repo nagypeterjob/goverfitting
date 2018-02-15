@@ -3,6 +3,8 @@ package matrix
 import (
 	"reflect"
 	"testing"
+
+	vector "github.ibm.com/Content-Delivery-Org/goverfitting/math/vector"
 )
 
 func TestAdd(t *testing.T) {
@@ -124,6 +126,37 @@ func TestMulNM(t *testing.T) {
 		if !success {
 			t.Errorf("[%d] MulNM is %+v, want %+v\n", i, res, tc.e)
 		}
+	}
+}
+
+func TestMulVec(t *testing.T) {
+	m := NewMatrix(
+		[][]float64{
+			{1, 2, 3, 4, 5},
+			{1, 2, 3, 4, 5},
+			{1, 2, 3, 4, 5},
+			{1, 2, 3, 4, 5},
+			{1, 2, 3, 4, 5},
+		},
+	)
+	v := vector.NewVector([]float64{
+		5, 5, 5, 5, 5,
+	},
+	)
+	expected := NewMatrix(
+		[][]float64{
+			{75},
+			{75},
+			{75},
+			{75},
+			{75},
+		},
+	)
+	result := m.MulVec(v)
+
+	success := reflect.DeepEqual(result, expected)
+	if !success {
+		t.Errorf("MulVec is %+v, want %+v\n", result, expected)
 	}
 }
 
