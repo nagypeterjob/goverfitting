@@ -4,6 +4,7 @@ import (
 	"math"
 
 	utils "github.ibm.com/Content-Delivery-Org/goverfitting/math"
+	vector "github.ibm.com/Content-Delivery-Org/goverfitting/math/vector"
 )
 
 // Matrix type
@@ -29,6 +30,26 @@ func (m *Matrix) Mul(mat *Matrix) *Matrix {
 	}
 	// N*N multiplication
 	return m.operation(mat, utils.Multiplication)
+}
+
+//MulVec returns the product of matrix and a vec
+func (m *Matrix) MulVec(vec *vector.Vector) *Matrix {
+	r, c := m.Shape()
+	size := vec.Size()
+	if c != size {
+		panic("failed MulVec - shape mismatch")
+	}
+	var (
+		n = NewMatrix(nil).Zero(r, 1)
+	)
+	for i := range m.N {
+		var sum float64
+		for j := range m.N[0] {
+			sum += utils.Multiplication(m.At(i, j), vec.N[j])
+		}
+		n.N[i][0] = sum
+	}
+	return n
 }
 
 // Sub subtracts two matrices
